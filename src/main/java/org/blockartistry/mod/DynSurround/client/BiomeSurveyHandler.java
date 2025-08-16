@@ -24,16 +24,22 @@
 
 package org.blockartistry.mod.DynSurround.client;
 
+import org.blockartistry.mod.DynSurround.Module;
 import org.blockartistry.mod.DynSurround.client.EnvironStateHandler.EnvironState;
 import org.blockartistry.mod.DynSurround.data.FakeBiome;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TObjectIntHashMap;
+import lotr.common.LOTRDimension;
+import lotr.common.world.LOTRWorldChunkManager;
+import lotr.common.world.biome.LOTRBiome;
+import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.WorldChunkManager;
 
 @SideOnly(Side.CLIENT)
 public final class BiomeSurveyHandler implements IClientEffectHandler {
@@ -41,7 +47,7 @@ public final class BiomeSurveyHandler implements IClientEffectHandler {
 	private static final int BIOME_SURVEY_RANGE = 6;
 
 	private static int area;
-	private static final TObjectIntHashMap<BiomeGenBase> weights = new TObjectIntHashMap<BiomeGenBase>();
+	private static final TObjectIntHashMap<BiomeDataMutable> weights = new TObjectIntHashMap<BiomeDataMutable>();
 
 	private static BiomeGenBase lastPlayerBiome = null;
 	private static int lastDimension = 0;
@@ -53,9 +59,68 @@ public final class BiomeSurveyHandler implements IClientEffectHandler {
 		return area;
 	}
 
-	public static TObjectIntHashMap<BiomeGenBase> getBiomes() {
+	public static TObjectIntHashMap<BiomeDataMutable> getBiomes() {
 		return weights;
 	}
+	
+	// unpack
+	public static final BiomeGenBase getBiome(final int key) {
+		final int dimIndex = key >> 8 & 255;
+		
+		final BiomeGenBase[] biomes = dimIndex > 0 ? LOTRDimension.values()[dimIndex].biomeList : BiomeGenBase.getBiomeGenArray();
+		return biomes[key & 255];
+	}
+	
+	public static final int createKey(final BiomeGenBase biomeIn, final LOTRBiomeVariant variantIn) {
+		return biomeIn.biomeID |
+		  ((Module.lotr && biomeIn instanceof LOTRBiome) 
+				  ? ((LOTRBiome) biomeIn).biomeDimension.ordinal() >> 8 | variantIn.variantID >> 16
+				  : 0
+		  );
+	}
+	
+	// pack
+	public static final LOTRBiomeVariant getVariant(final int key) {
+		return LOTRBiomeVariant.getVariantForID(key >> 16);
+	}
+	
+	// pack #2
+	public static final class BiomeData {
+		  public final BiomeGenBase biome;
+		  public final LOTRBiomeVariant variant;
+		  private final int hash;
+		  
+		  public BiomeData(final BiomeGenBase biomeIn, final LOTRBiomeVariant variantIn) {
+			  biome = biomeIn;
+			  variant = variantIn;
+			  hash = createKey(biomeIn, variantIn);
+		  }
+		  
+		  @Override
+		  public final int hashCode() {
+			  return hash;
+		  }
+	}
+	
+	public static final class BiomeDataMutable {
+		  public BiomeGenBase biome;
+		  public LOTRBiomeVariant variant;
+		  private int hash;
+		  
+		  public final BiomeDataMutable set(final BiomeGenBase biomeIn, final LOTRBiomeVariant variantIn) {
+			  biome = biomeIn;
+			  variant = variantIn;
+			  hash = createKey(biomeIn, variantIn);
+			  return this;
+		  }
+		  
+		  @Override
+		  public final int hashCode() {
+			  return hash;
+		  }
+	}
+	
+	public static BiomeDataMutable cacheInstance = new BiomeDataMutable();
 
 	private static void doSurvey(final EntityPlayer player, final int range) {
 		area = 0;
@@ -63,8 +128,17 @@ public final class BiomeSurveyHandler implements IClientEffectHandler {
 
 		if (EnvironState.getPlayerBiome() instanceof FakeBiome) {
 			area = 1;
-			weights.put(EnvironState.getPlayerBiome(), 1);
-		} else {
+			if(weights.put(cacheInstance.set(EnvironState.getPlayerBiome(), null), 1) == 1) {
+				// key didnt existed yet
+				cacheInstance = new BiomeDataMutable();
+			}
+		} 
+		
+		else {
+			WorldChunkManager chunkManager = player.worldObj.getWorldChunkManager();
+			
+			boolean lookupVariants = Module.lotr && chunkManager instanceof LOTRWorldChunkManager; 
+			
 			final int x = MathHelper.floor_double(player.posX);
 			final int z = MathHelper.floor_double(player.posZ);
 
@@ -72,7 +146,15 @@ public final class BiomeSurveyHandler implements IClientEffectHandler {
 				for (int dZ = -range; dZ <= range; dZ++) {
 					area++;
 					final BiomeGenBase biome = player.worldObj.getBiomeGenForCoords(x + dX, z + dZ);
-					weights.adjustOrPutValue(biome, 1, 1);
+					LOTRBiomeVariant variant = null;
+					if(lookupVariants) {
+						variant = ((LOTRWorldChunkManager) chunkManager).getBiomeVariantAt(x + dX, z + dZ);
+					}
+					
+					if(weights.adjustOrPutValue(cacheInstance.set(biome, variant), 1, 1) == 1) {
+						// key didnt existed yet
+						cacheInstance = new BiomeDataMutable();
+					}
 				}
 		}
 	}

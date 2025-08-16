@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.blockartistry.mod.DynSurround.proxy.Proxy;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -43,11 +44,13 @@ import net.minecraftforge.common.config.Configuration;
 @Mod(modid = Module.MOD_ID, useMetadata = true, dependencies = Module.DEPENDENCIES, version = Module.VERSION, guiFactory = Module.GUI_FACTORY)
 public class Module {
 	public static final String MOD_ID = "dsurround";
-	public static final String MOD_NAME = "Dynamic Surroundings";
+	public static final String MOD_NAME = "Dynamic Surroundings LOTR";
 	public static final String VERSION = "@VERSION@";
 	public static final String DEPENDENCIES = "required-after:Forge@[10.13.4.1614,)";
 	public static final String GUI_FACTORY = "org.blockartistry.mod.DynSurround.client.gui.ConfigGuiFactory";
 
+	public static boolean lotr;
+	
 	@Instance(MOD_ID)
 	protected static Module instance;
 
@@ -80,7 +83,7 @@ public class Module {
 
 	@EventHandler
 	public void preInit(final FMLPreInitializationEvent event) {
-
+		lotr = Loader.isModLoaded("lotr");
 		FMLCommonHandler.instance().bus().register(this);
 
 		// Load up our configuration

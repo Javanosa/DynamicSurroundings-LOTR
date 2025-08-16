@@ -1,7 +1,7 @@
 {
 	"entries":[
 		{
-			"biomeName":"(?i)(?!.*forest.*|.*taiga.*|.*jungle.*|.*\\+.*|.*savanna.*)(.*hills.*|.*plateau.*|.*wasteland.*|.*canyon.*|tundra|highlands)",
+			"biomeName":"(?i)(woodlandRealmHills|wold|ironHills|nearHaradHills|rohanUrukHighlands|brownLands|anduinHills|angmar|wilderland|ithilienHills|eastBight|dagorlad|umbarHills|gorgoroth)",
 			"sounds":[
 				{
 					"sound":"dsurround:wind",
@@ -12,7 +12,7 @@
 			
 		},
 		{
-			"biomeName":"(?i)(.*mountain.*|.*hills\\+.*|crag|alps)",
+			"biomeName":"(?i)(erebor|farHaradAridHills|farHaradBushlandHills|rhunLandHills|rivendellHills|mistyMountains|whiteMountains|mordorMountains|emynMuil|loneLandsHills|greyMountains|forodwaith|angmarMountains|redMountains|windMountains)",
 			"sounds":[
 				{
 					"sound":"dsurround:wind",
@@ -23,7 +23,7 @@
 			
 		},
 		{
-			"biomeName":"(?i)(.*jungle.*)",
+			"biomeName":"(?i)(farHaradForest|farHaradKanuka)",
 			"spotSoundChance":600,
 			"soundReset":true,
 			"sounds":[
@@ -51,7 +51,7 @@
 			
 		},
 		{
-			"biomeName":"(?i)(?!.*ice.*)(.*plains.*|.*meadow.*|grassland|prairie|.*field.*|.*chaparral.*)",
+			"biomeName":"(?i)(.*clearing|minhiriath|eregion|pelennor|woodlandRealm|gladdenFields|dale|andrast|dorwinion|pinnathGelin|island|woodlandRealmHills|blackrootVale|andrast|lossarnach|umbarHills|umbar|harondor|rhunLand|lindon|loneLandsHills|rivendell|dunland|breeland|eriador|rohan|gondor|lonelands|shire|wold|rohanUrukHighlands|dunland|angle|eriadorDowns|anduinHills|lothlorienEdge|eregion|wilderland|dale|towerHills|nearHaradOasis|lebennin|rhunLandHills)",
 			"sounds":[
 				{
 					"sound": "dsurround:plains",
@@ -80,7 +80,7 @@
 			
 		},
 		{
-			"biomeName":"(?i)(?!.*dead.*|.*flower.*|.*fungi.*|.*frost.*|.*snow.*|.*kelp.*|.*wasteland.*)(forest|foresthills|birch forest|birch forest hills|roofed forest|.*cherry.*|.*orchard.*|.*wetland.*|thicket|grove)",
+			"biomeName":"(?i)(?!.*deadForest.*|eastBight|mirkwoodCorrupted)(.*\.forest|gondorWoodlands|mirkwoodNorth|rhunForest|trollshaws|lothlorien|ithilien|oldForest|lindonWoodlands|chetwood|rivendellHills|halfTrollForest|shireWoodlands|fangorn|erynVorn|towerHills|rhunRedForest|rhunIslandForest)",
 			"sounds":[
 				{
 					"sound":"dsurround:forest",
@@ -97,7 +97,7 @@
 					"sound": "dsurround:woodpecker",
 					"conditions": "(?i)(?!.*#raining#.*).*#day#.*",
 					"soundType": "spot",
-					"volume":1.3
+					"volume":0.4
 				},
 				{
 					"sound":"dsurround:crickets",
@@ -127,6 +127,31 @@
 			
 		},
 		{
+			"biomeName":"(?i)(.*deadForest.*|mirkwoodCorrupted|eastBight\.forest)",
+			"sounds":[
+				{
+					"sound": "dsurround:woodpecker",
+					"conditions": "(?i)(?!.*#raining#.*).*#day#.*",
+					"soundType": "spot",
+					"volume":0.4
+				}
+				
+			]
+			
+		},
+		{
+			"biomeName":"(?i)(rohan|taiga|dunland|angmar|mordor|emynMuil|angmarMountains|loneLandsHills|ironHills|angmar|wilderland|brownLands|eastBight|dagorlad|gorgoroth|.*spruce.*)",
+			"sounds":[
+				{
+					"sound":"dsurround:wolf",
+					"conditions":"(?i)(?!.*#raining#.*).*#night#.*",
+					"soundType":"spot",
+					"volume":0.3
+				}
+			]
+			
+		},
+		{
 			"biomeName":"(?i)(.*taiga.*)",
 			"sounds":[
 				{
@@ -146,7 +171,7 @@
 			
 		},
 		{
-			"biomeName":"(?i)(?!.*frozen.*|.*cold.*)(.*beach.*|.*ocean.*|.*kelp.*|.*reef.*)",
+			"biomeName":"(?i)(ocean|island|beach|beachGravel|beachWhite)",
 			"sounds":[
 				{
 					"sound":"dsurround:beach",
@@ -163,7 +188,7 @@
 			
 		},
 		{
-			"biomeName":"(?i)(?!.*frozen.*|.*dry.*)(.*river.*)",
+			"biomeName":"(?i)(.*river|.*lake)",
 			"sounds":[
 				{
 					"sound":"dsurround:river",
@@ -179,25 +204,6 @@
 				
 			]
 			
-		},
-		{
-			"biomeName":"Deep Ocean",
-			"soundReset":true,
-			"sounds":[
-				{
-					"sound":"dsurround:beach",
-					"volume":3.0,
-					"pitch":0.4
-				}
-				
-			]
-			
-		},
-		{
-			"biomeName":"(?i)(.*swamp.*)",
-			"fog":true,
-			"fogColor":"64,96,64",
-			"fogDensity":0.4
 		},
 		{
 			"biomeName":"(?i)(?!.*dead.*)(.*swamp.*)",
@@ -219,13 +225,41 @@
 			
 		},
 		{
-			"biomeName":"(?i)(.*fen.*|.*bog.*|.*marsh.*|.*moor.*|.*bayou.*|quagmire|silkglades)",
+			"biomeName":"(?i)(?!deadMarshes)(.*swampUpland|farHaradMangrove)",
 			"spotSoundChance":600,
 			"sounds":[
 				{
+					"sound":"dsurround:insectbuzz",
+					"conditions":"(?i)(?!.*#raining#.*)(.*)",
+					"soundType":"spot",
+					"volume":0.5,
+					"variable":true
+				},
+				{
 					"sound":"dsurround:crickets",
-					"volume":3.0,
-					"conditions":"(?i).*#night#.*"
+					"conditions":"(?i)(?!.*#raining#.*).*#night#.*",
+					"volume":3.0
+				}
+				
+			]
+		},
+		{
+			"biomeName":"(?i)(?!deadMarshes)(.*swampLowland|farHaradMangrove)",
+			"sounds":[
+				{
+					"sound":"dsurround:crocodile",
+					"soundType":"spot",
+					"volume":0.6
+				},
+				{
+					"sound":"dsurround:crickets",
+					"conditions":"(?i)(?!.*#raining#.*).*#night#.*",
+					"volume":3.0
+				},
+				{
+					"sound":"dsurround:crickets",
+					"conditions":"(?i)(?!.*#raining#.*).*#day#.*",
+					"volume":1.0
 				},
 				{
 					"sound":"dsurround:insectbuzz",
@@ -235,30 +269,11 @@
 					"variable":true
 				}
 				
-			],
-			"fog":true,
-			"fogColor":"128,128,128",
-			"fogDensity":0.4
-		},
-		{
-			"biomeName":"(?i)(?!.*dead.*)(.*swamp.*|.*marsh.*|.*bayou.*)",
-			"sounds":[
-				{
-					"sound":"dsurround:crocodile",
-					"soundType":"spot",
-					"volume":0.7
-				}
-				
 			]
 			
 		},
 		{
-			"biomeName":"(?i)(.*desert.*|.*sand.*|.*mesa.*|.*wasteland.*|.*sahara.*)",
-			"dust":true,
-			"dustColor":"204,185,102"
-		},
-		{
-			"biomeName":"(?i)(?!.*cold.*|.*frozen.*)(.*desert.*|.*sand.*|.*mesa.*)",
+			"biomeName":"(?i)(.*rhun.*|.*nearharad.*|.*steppe.*|brownLands|umbar|lostladen|nurn)",
 			"sounds":[
 				{
 					"sound":"dsurround:rattlesnake",
@@ -271,12 +286,11 @@
 					"conditions": "(?i)(?!.*#raining#.*).*#night#.*",
 					"soundType": "spot"
 				}
-				
 			]
 			
 		},
 		{
-			"biomeName":"(?i)(.*savanna.*)",
+			"biomeName":"(?i)(farHaradArid|farHaradAridHills|farHaradBushland|farHaradBushlandHills)",
 			"sounds":[
 				{
 					"sound":"dsurround:elephant",
@@ -295,134 +309,7 @@
 				
 			]
 			
-		},
-		{
-			"biomeName":"(?i)(the end|sky)",
-			"aurora":true,
-			"sounds":[
-				{
-					"sound":"dsurround:theend",
-					"volume":0.2
-				}
-				
-			]
-			
-		},
-		{
-			"biomeName":"(?i)(.*taiga.*|.*frozen.*|.*ice.*|.*tundra.*|.*polar.*|.*snow.*|.*glacier.*|.*arctic.*)",
-			"aurora":true
-		},
-		{
-			"biomeName":"(?i)(hell|.*visceral.*|.*inferno.*|undergarden|boneyard)",
-			"dust":true,
-			"dustColor":"255,0,0"
-		},
-		{
-			"biomeName":"Underground",
-			"sounds":[
-				{
-					"sound":"dsurround:underground",
-					"volume":0.9
-				},
-				{
-					"sound": "dsurround:rockfall",
-					"soundType": "spot",
-					"volume":2.0,
-					"weight": 30
-				},
-				{
-					"sound": "dsurround:bigrockfall",
-					"soundType": "spot",
-					"volume": 0.4,
-					"weight": 15
-				},
-				{
-					"sound":"dsurround:monstergrowl",
-					"conditions":"(?i).*#night#.*",
-					"soundType":"spot",
-					"volume":0.3,
-					"weight":10
-				}
-				
-			]
-			
-		},
-		{
-			"biomeName":"UnderOCN",
-			"sounds":[
-				{
-					"sound":"dsurround:underocean",
-					"volume":0.3
-				}
-				
-			]
-			
-		},
-		{
-			"biomeName":"UnderDOCN",
-			"sounds":[
-				{
-					"sound":"dsurround:underdeepocean",
-					"volume":0.1
-				},
-				{
-					"sound":"dsurround:whale",
-					"soundType":"spot",
-					"volume":0.3
-				}
-				
-			]
-			
-		},
-		{
-			"biomeName":"UnderRVR",
-			"sounds":[
-				{
-					"sound":"dsurround:underriver",
-					"volume":3.0
-				}
-				
-			]
-			
-		},
-		{
-			"biomeName": "Underwater",
-			"sounds": [
-				{
-					"sound": "dsurround:underwater",
-					"volume":3.0
-				}
-			]
-		},
-		{
-			"biomeName":"Clouds",
-			"sounds":[
-				{
-					"sound":"dsurround:wind",
-					"volume":3.0
-				}
-				
-			]
-			
-		},
-		{
-			"biomeName":"Player",
-			"sounds":[
-				{
-					"sound":"dsurround:heartbeat",
-					"conditions":"(?i).*#hurt#.*"
-				},
-				{
-					"sound":"dsurround:tummy",
-					"conditions":"(?i).*#hungry#.*",
-					"soundType":"periodic",
-					"repeatDelay":300
-				}
-				
-			]
-			
 		}
-		
 	]
 	
 }

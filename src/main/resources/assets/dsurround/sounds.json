@@ -718,7 +718,10 @@
 	"dust": {
 		"category": "weather",
 		"sounds": [
-			"dsurround:ambient/weather/dust"
+			{
+				"name": "dsurround:ambient/weather/dust",
+				"volume": 2
+			}
 		]
 	},
 	"ice": {
@@ -742,7 +745,8 @@
 		"sounds": [
 			{
 				"name": "dsurround:ambient/outside/wind",
-				"stream": true
+				"stream": true,
+				"volume": 2
 			}
 		]
 	},
@@ -778,7 +782,8 @@
 		"sounds": [
 			{
 				"name": "dsurround:ambient/outside/river",
-				"stream": true
+				"stream": true,
+				"volume": 3
 			}
 		]
 	},
@@ -929,7 +934,8 @@
 		"sounds": [
 			{
 				"name": "dsurround:ambient/underwater/ocean",
-				"stream": true
+				"stream": true,
+				"volume": 2
 			}
 		]
 	},
@@ -938,7 +944,8 @@
 		"sounds": [
 			{
 				"name": "dsurround:ambient/underwater/river",
-				"stream": true
+				"stream": true,
+				"volume": 2
 			}
 		]
 	},
@@ -947,7 +954,8 @@
 		"sounds": [
 			{
 				"name": "dsurround:ambient/underwater/water",
-				"stream": true
+				"stream": true,
+				"volume": 2
 			}
 		]
 	},
@@ -993,7 +1001,10 @@
 	"jump": {
 		"category": "player",
 		"sounds": [
-			"dsurround:ambient/steve/jump"
+			{
+				"name":"dsurround:ambient/steve/jump",
+				"volume": 0.5
+			}
 		]
 	},
 	"bees": {

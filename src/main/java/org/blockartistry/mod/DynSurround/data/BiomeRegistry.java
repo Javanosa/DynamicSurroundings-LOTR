@@ -42,11 +42,14 @@ import org.blockartistry.mod.DynSurround.client.sound.SoundEffect.SoundType;
 import org.blockartistry.mod.DynSurround.data.config.BiomeConfig;
 import org.blockartistry.mod.DynSurround.data.config.SoundConfig;
 import org.blockartistry.mod.DynSurround.event.RegistryReloadEvent;
+import org.blockartistry.mod.DynSurround.lotr.LOTRHelper;
 import org.blockartistry.mod.DynSurround.util.Color;
 import org.blockartistry.mod.DynSurround.util.MyUtils;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import lotr.common.world.biome.LOTRBiome;
+import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -140,11 +143,15 @@ public final class BiomeRegistry {
 					results.add(sound);
 			return results;
 		}
-
+		
 		@Override
 		public String toString() {
+			return toString(0);
+		}
+
+		public String toString(int key) {
 			final StringBuilder builder = new StringBuilder();
-			builder.append(String.format("Biome %d [%s]:", this.biome.biomeID, resolveName(this.biome)));
+			builder.append(String.format("Biome %d [%s]:", this.biome.biomeID, resolveName(this.biome, LOTRHelper.getVariantGroup((int) (key*0.0001)))));
 			if (this.hasPrecipitation)
 				builder.append(" PRECIPITATION");
 			if (this.hasDust)
@@ -187,6 +194,20 @@ public final class BiomeRegistry {
 			return new StringBuilder().append('#').append(biome.biomeID).toString();
 		return biome.biomeName;
 	}
+	
+	public static String resolveName(final BiomeGenBase biome, final int variantkey) {
+		if (biome == null)
+			return "(Bad Biome)";
+		if (StringUtils.isEmpty(biome.biomeName))
+			return new StringBuilder().append('#').append(biome.biomeID).toString();
+		if (variantkey != 0)
+			return new StringBuilder().append(biome.biomeName).append('.').append(LOTRBiomeVariant.getVariantForID(variantkey).variantName).toString();
+		return biome.biomeName;
+	}
+	
+	public static void registerEntry(final int key, final BiomeGenBase biome) {
+		registry.put(key, new Entry(biome));
+	}
 
 	public static void initialize() {
 		synchronized (registry) {
@@ -205,7 +226,11 @@ public final class BiomeRegistry {
 				if (biomeArray[i] != null) {
 					registry.put(biomeArray[i].biomeID, new Entry(biomeArray[i]));
 				}
-
+			
+			if(Module.lotr) {
+				LOTRHelper.registerLOTRBiomes();
+			}
+			
 			// Add our fake biomes
 			registry.put(UNDERGROUND.biomeID, new Entry(UNDERGROUND));
 			registry.put(UNDERWATER.biomeID, new Entry(UNDERWATER));
@@ -221,8 +246,8 @@ public final class BiomeRegistry {
 
 			if (ModOptions.enableDebugLogging) {
 				ModLog.info("*** BIOME REGISTRY ***");
-				for (final Entry entry : registry.valueCollection())
-					ModLog.info(entry.toString());
+				for (final int key : registry.keys())
+					ModLog.info(registry.get(key).toString(key));
 			}
 
 			// Free memory because we no longer need
@@ -232,61 +257,77 @@ public final class BiomeRegistry {
 		MinecraftForge.EVENT_BUS.post(new RegistryReloadEvent.Biome());
 	}
 
-	private static Entry get(final BiomeGenBase biome) {
+	private static Entry get(final BiomeGenBase biome, final LOTRBiomeVariant variant) {
 		synchronized (registry) {
-			Entry entry = registry.get(biome == null ? WTF.biomeID : biome.biomeID);
+			
+			int variantid = 0;
+			
+			boolean islotrbiome = biome instanceof LOTRBiome;
+			
+			if(islotrbiome && variant != null)
+				variantid = LOTRHelper.getVariantGroup(variant.variantID)*10000;
+			
+			// variant	isLOTRBiome	biomeID
+			// 51		1			168
+			final int key = biome == null ? WTF.biomeID : (islotrbiome ? 1000 : 0) + biome.biomeID + variantid;
+			Entry entry = registry.get(key);
 			if (entry == null) {
-				ModLog.warn("Biome [%s] was not detected during initial scan! Reloading config...", resolveName(biome));
+				
+				entry = new Entry(biome);
+				registry.put(key, entry);
+				ModLog.warn("Biome [%s] was not detected during initial scan!", resolveName(biome, (int) (variantid*0.0001)));
+				
+				/*ModLog.warn("Biome [%s] was not detected during initial scan! Reloading config...", resolveName(biome));
 				initialize();
 				entry = registry.get(biome.biomeID);
 				if (entry == null) {
 					ModLog.warn("Still can't find biome [%s]! Explicitly adding at defaults", resolveName(biome));
 					entry = new Entry(biome);
 					registry.put(biome.biomeID, entry);
-				}
+				}*/
 			}
 			return entry;
 		}
 	}
 
 	public static boolean hasDust(final BiomeGenBase biome) {
-		return get(biome).hasDust;
+		return get(biome, null).hasDust;
 	}
 
 	public static boolean hasPrecipitation(final BiomeGenBase biome) {
-		return get(biome).hasPrecipitation;
+		return get(biome, null).hasPrecipitation;
 	}
 
 	public static boolean hasAurora(final BiomeGenBase biome) {
-		return get(biome).hasAurora;
+		return get(biome, null).hasAurora;
 	}
 
 	public static boolean hasFog(final BiomeGenBase biome) {
-		return get(biome).hasFog;
+		return get(biome, null).hasFog;
 	}
 
 	public static Color getDustColor(final BiomeGenBase biome) {
-		return get(biome).dustColor;
+		return get(biome, null).dustColor;
 	}
 
 	public static Color getFogColor(final BiomeGenBase biome) {
-		return get(biome).fogColor;
+		return get(biome, null).fogColor;
 	}
 
 	public static float getFogDensity(final BiomeGenBase biome) {
-		return get(biome).fogDensity;
+		return get(biome, null).fogDensity;
 	}
 
-	public static SoundEffect getSound(final BiomeGenBase biome, final String conditions) {
-		return get(biome).findSoundMatch(conditions);
+	public static SoundEffect getSound(final BiomeGenBase biome, final LOTRBiomeVariant variant, final String conditions) {
+		return get(biome, variant).findSoundMatch(conditions);
 	}
 
-	public static List<SoundEffect> getSounds(final BiomeGenBase biome, final String conditions) {
-		return get(biome).findSoundMatches(conditions);
+	public static List<SoundEffect> getSounds(final BiomeGenBase biome, final LOTRBiomeVariant variant, final String conditions) {
+		return get(biome, variant).findSoundMatches(conditions);
 	}
 
-	public static SoundEffect getSpotSound(final BiomeGenBase biome, final String conditions, final Random random) {
-		final Entry e = get(biome);
+	public static SoundEffect getSpotSound(final BiomeGenBase biome, final LOTRBiomeVariant variant, final String conditions, final Random random) {
+		final Entry e = get(biome, variant);
 		if (e == null || e.spotSounds.isEmpty() || random.nextInt(e.spotSoundChance) != 0)
 			return null;
 
@@ -317,6 +358,14 @@ public final class BiomeRegistry {
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
+		
+		if(Module.lotr) {
+			try {
+				process(BiomeConfig.load("lotrBiomes"));
+			} catch (final Exception e) {
+				e.printStackTrace();
+			}
+		}
 
 		final String[] configFiles = ModOptions.biomeConfigFiles;
 		for (final String file : configFiles) {
@@ -346,8 +395,10 @@ public final class BiomeRegistry {
 
 	private static void process(final BiomeConfig config) {
 		for (final BiomeConfig.Entry entry : config.entries) {
-			for (final Entry biomeEntry : registry.valueCollection()) {
-				if (isBiomeMatch(entry, resolveName(biomeEntry.biome))) {
+			for (int key : registry.keys()) {
+				final Entry biomeEntry = registry.get(key);
+
+				if (isBiomeMatch(entry, resolveName(biomeEntry.biome, LOTRHelper.getVariantGroup((int) (key*0.0001))))) {
 					if (entry.hasPrecipitation != null)
 						biomeEntry.hasPrecipitation = entry.hasPrecipitation.booleanValue();
 					if (entry.hasAurora != null)

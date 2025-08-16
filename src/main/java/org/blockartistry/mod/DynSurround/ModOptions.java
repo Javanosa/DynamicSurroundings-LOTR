@@ -79,20 +79,20 @@ public final class ModOptions {
 	@MinMaxFloat(min = 0.0F, max = 1.0F)
 	@Comment("Factor to apply to rain sound level to adjust")
 	public static float soundLevel = 1.0F;
-	@Parameter(category = CATEGORY_RAIN, property = CONFIG_DISABLE_WEATHER_EFFECTS, defaultValue = "false")
-	@Comment("Disable ASM related to weather effects")
+	@Parameter(category = CATEGORY_RAIN, property = CONFIG_DISABLE_WEATHER_EFFECTS, defaultValue = "true")
+	@Comment("Disable ASM related to weather effects, Also disables Aurora")
 	@RestartRequired
-	public static boolean disableWeatherEffects = false;
+	public static boolean disableWeatherEffects = true;
 	@Parameter(category = CATEGORY_RAIN, property = CONFIG_RAIN_PARTICLE_BASE, defaultValue = "100")
 	@MinMaxInt(min = 0, max = 500)
 	@Comment("Base count of rain splash particles to generate per tick")
 	public static int particleCountBase = 100;
-	@Parameter(category = CATEGORY_RAIN, property = CONFIG_ALWAYS_OVERRIDE_SOUND, defaultValue = "true")
+	@Parameter(category = CATEGORY_RAIN, property = CONFIG_ALWAYS_OVERRIDE_SOUND, defaultValue = "false")
 	@Comment("Always override Vanilla rain sound even when dimension is blacklisted")
-	public static boolean alwaysOverrideSound = true;
-	@Parameter(category = CATEGORY_RAIN, property = CONFIG_RESET_RAIN_ON_SLEEP, defaultValue = "true")
+	public static boolean alwaysOverrideSound = false;
+	@Parameter(category = CATEGORY_RAIN, property = CONFIG_RESET_RAIN_ON_SLEEP, defaultValue = "false")
 	@Comment("Reset rain/thunder when all players sleep")
-	public static boolean resetRainOnSleep = true;
+	public static boolean resetRainOnSleep = false;
 
 	public static final String CATEGORY_FOG = "fog";
 	public static final String CONFIG_ALLOW_DESERT_FOG = "Desert Fog";
@@ -250,10 +250,10 @@ public final class ModOptions {
 	@Comment("Number of streaming sound channels to configure in the sound system (manual)")
 	@RestartRequired
 	public static int streamingSoundChannelCount = 4;
-	@Parameter(category = CATEGORY_SOUND, property = CONFIG_ENABLE_JUMP_SOUND, defaultValue = "true")
+	@Parameter(category = CATEGORY_SOUND, property = CONFIG_ENABLE_JUMP_SOUND, defaultValue = "false")
 	@Comment("Enable sound effect when jumping")
 	@RestartRequired
-	public static boolean enableJumpSound = true;
+	public static boolean enableJumpSound = false;
 	@Parameter(category = CATEGORY_SOUND, property = CONFIG_ENABLE_SWING_SOUND, defaultValue = "true")
 	@Comment("Enable weapons swing sound effect when attacking")
 	@RestartRequired
@@ -270,27 +270,50 @@ public final class ModOptions {
 	@Comment("Enable footstep sounds")
 	@RestartRequired
 	public static boolean enableFootstepSounds = true;
-	@Parameter(category = CATEGORY_SOUND, property = CONFIG_FOOTSTEPS_SOUND_FACTOR, defaultValue = "0.15")
+	@Parameter(category = CATEGORY_SOUND, property = CONFIG_FOOTSTEPS_SOUND_FACTOR, defaultValue = "0.4")
 	@MinMaxFloat(min = 0.0F, max = 1.0F)
 	@Comment("Sound scale factor for footstep sounds")
-	public static float footstepsSoundFactor = 0.15F;
-	@Parameter(category = CATEGORY_SOUND, property = CONFIG_SOUND_CULL_THRESHOLD, defaultValue = "20")
+	public static float footstepsSoundFactor = 0.4F;
+	@Parameter(category = CATEGORY_SOUND, property = CONFIG_SOUND_CULL_THRESHOLD, defaultValue = "1")
 	@MinMaxInt(min = 0)
 	@Comment("Ticks between culled sound events (0 to disable culling)")
-	public static int soundCullingThreshold = 20;
-	@Parameter(category = CATEGORY_SOUND, property = CONFIG_CULLED_SOUNDS, defaultValue = "^minecraft:liquid.*,minecraft:mob.sheep.say,minecraft:mob.chicken.say,minecraft:mob.cow.say,minecraft:mob.pig.say")
+	public static int soundCullingThreshold = 1;
+	@Parameter(category = CATEGORY_SOUND, property = CONFIG_CULLED_SOUNDS, defaultValue = "minecraft:mob.sheep.say,minecraft:mob.chicken.say,minecraft:mob.cow.say,minecraft:mob.pig.say")
 	@Comment("Sounds to cull from frequent playing")
 	@RestartRequired
-	public static String[] culledSounds = { "^minecraft:liquid.*", "minecraft:mob.sheep.say",
+	public static String[] culledSounds = { "minecraft:mob.sheep.say",
 			"minecraft:mob.chicken.say", "minecraft:mob.cow.say", "minecraft:mob.pig.say" };
 	@Parameter(category = CATEGORY_SOUND, property = CONFIG_BLOCKED_SOUNDS, defaultValue = "dsurround:bison")
 	@Comment("Sounds to block from playing")
 	@Hidden
 	public static String[] blockedSounds = { "dsurround:bison" };
-	@Parameter(category = CATEGORY_SOUND, property = CONFIG_SOUND_VOLUMES, defaultValue = "")
+	@Parameter(category = CATEGORY_SOUND, property = CONFIG_SOUND_VOLUMES, defaultValue = "dsurround:beach=200,dsurround:crickets=200,dsurround:dust=200,dsurround:forest=200,dsurround:fs.dirt.dirt_land=90,dsurround:fs.dirt.dirt_run=90,dsurround:fs.dirt.dirt_walk=90,dsurround:fs.dirt.dirt_wander=90,dsurround:fs.stone.stone_run=80,dsurround:fs.stone.stone_walk=80,dsurround:fs.stone.stone_wander=80,dsurround:ice=90,dsurround:plains=200,dsurround:river=200,dsurround:silence=200,dsurround:underdeepocean=200,dsurround:underground=200,dsurround:underocean=200,dsurround:underriver=200,dsurround:underwater=200,dsurround:waterdrops=200,dsurround:wind=200")
 	@Comment("Individual sound scaling factors")
 	@Hidden
-	public static String[] soundVolumes = {};
+	public static String[] soundVolumes = {
+			"dsurround:beach=200",
+			"dsurround:crickets=200",
+			"dsurround:dust=200",
+			"dsurround:forest=200",
+			"dsurround:fs.dirt.dirt_land=90",
+			"dsurround:fs.dirt.dirt_run=90",
+			"dsurround:fs.dirt.dirt_walk=90",
+			"dsurround:fs.dirt.dirt_wander=90",
+			"dsurround:fs.stone.stone_run=80",
+			"dsurround:fs.stone.stone_walk=80",
+			"dsurround:fs.stone.stone_wander=80",
+			"dsurround:ice=90,dsurround:plains=200",
+			"dsurround:river=200",
+			"dsurround:silence=200",
+			"dsurround:underdeepocean=200",
+			"dsurround:underground=200",
+			"dsurround:underocean=200",
+			"dsurround:underriver=200",
+			"dsurround:underwater=200",
+			"dsurround:waterdrops=200",
+			"dsurround:wind=200"
+		};
+	
 
 	public static final String CATEGORY_PLAYER = "player";
 	public static final String CONFIG_SUPPRESS_POTION_PARTICLES = "Suppress Potion Particles";
@@ -304,18 +327,18 @@ public final class ModOptions {
 	@Comment("Suppress player's potion particles from rendering")
 	@RestartRequired
 	public static boolean suppressPotionParticles = false;
-	@Parameter(category = CATEGORY_PLAYER, property = CONFIG_ENABLE_POPOFFS, defaultValue = "true")
+	@Parameter(category = CATEGORY_PLAYER, property = CONFIG_ENABLE_POPOFFS, defaultValue = "false")
 	@Comment("Controls display of damage pop-offs when an entity is damaged")
 	@RestartRequired
-	public static boolean enableDamagePopoffs = true;
-	@Parameter(category = CATEGORY_PLAYER, property = CONFIG_HURT_THRESHOLD, defaultValue = "8")
+	public static boolean enableDamagePopoffs = false;
+	@Parameter(category = CATEGORY_PLAYER, property = CONFIG_HURT_THRESHOLD, defaultValue = "0")
 	@Comment("Amount of health bar remaining to trigger player hurt sound")
 	@MinMaxInt(min = 0, max = 10)
-	public static int playerHurtThreshold = 8;
-	@Parameter(category = CATEGORY_PLAYER, property = CONFIG_HUNGER_THRESHOLD, defaultValue = "8")
+	public static int playerHurtThreshold = 0;
+	@Parameter(category = CATEGORY_PLAYER, property = CONFIG_HUNGER_THRESHOLD, defaultValue = "0")
 	@Comment("Amount of food bar remaining to trigger player hunger sound")
 	@MinMaxInt(min = 0, max = 10)
-	public static int playerHungerThreshold = 8;
+	public static int playerHungerThreshold = 0;
 
 	public static final String CATEGORY_POTION_HUD = "player.potion hud";
 	public static final String CONFIG_POTION_HUD_ENABLE = "Enable";
@@ -327,10 +350,10 @@ public final class ModOptions {
 			CONFIG_POTION_HUD_TRANSPARENCY, CONFIG_POTION_HUD_SCALE, CONFIG_POTION_HUD_TOP_OFFSET,
 			CONFIG_POTION_HUD_LEFT_OFFSET);
 
-	@Parameter(category = CATEGORY_POTION_HUD, property = CONFIG_POTION_HUD_ENABLE, defaultValue = "true")
+	@Parameter(category = CATEGORY_POTION_HUD, property = CONFIG_POTION_HUD_ENABLE, defaultValue = "false")
 	@Comment("Enable display of potion icons in display")
 	@RestartRequired
-	public static boolean potionHudEnabled = true;
+	public static boolean potionHudEnabled = false;
 	@Parameter(category = CATEGORY_POTION_HUD, property = CONFIG_POTION_HUD_TRANSPARENCY, defaultValue = "0.5")
 	@MinMaxFloat(min = 0.0F, max = 1.0F)
 	@Comment("Transparency factor for icons (higher more solid)")

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.blockartistry.mod.DynSurround.ModOptions;
+import org.blockartistry.mod.DynSurround.client.BiomeSurveyHandler.BiomeDataMutable;
 import org.blockartistry.mod.DynSurround.client.EnvironStateHandler.EnvironState;
 import org.blockartistry.mod.DynSurround.client.sound.SoundEffect;
 import org.blockartistry.mod.DynSurround.client.sound.SoundManager;
@@ -41,6 +42,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TObjectIntHashMap;
+import lotr.common.world.LOTRWorldChunkManager;
+import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -50,6 +53,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.WorldChunkManager;
 import net.minecraftforge.client.event.sound.PlaySoundEvent17;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -67,9 +71,10 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 		// Need to collect sounds from all the applicable biomes
 		// along with their weights.
 		final TObjectIntHashMap<SoundEffect> sounds = new TObjectIntHashMap<SoundEffect>();
-		final TObjectIntHashMap<BiomeGenBase> weights = BiomeSurveyHandler.getBiomes();
-		for (final BiomeGenBase biome : weights.keySet()) {
-			final List<SoundEffect> bs = BiomeRegistry.getSounds(biome, conditions);
+		final TObjectIntHashMap<BiomeDataMutable> weights = BiomeSurveyHandler.getBiomes();
+		for (final BiomeDataMutable data : weights.keySet()) {
+			final BiomeGenBase biome = data.biome;
+			final List<SoundEffect> bs = BiomeRegistry.getSounds(biome, data.variant, conditions);
 			for (final SoundEffect sound : bs)
 				sounds.put(sound, sounds.get(sound) + weights.get(biome));
 		}
@@ -105,17 +110,24 @@ public class PlayerSoundEffectHandler implements IClientEffectHandler {
 		final List<SoundEffect> sounds = new ArrayList<SoundEffect>();
 		if (doBiomeSounds())
 			sounds.addAll(getBiomeSounds(conditions));
-		sounds.addAll(BiomeRegistry.getSounds(BiomeRegistry.PLAYER, conditions));
+		sounds.addAll(BiomeRegistry.getSounds(BiomeRegistry.PLAYER, null, conditions));
 
 		SoundManager.queueAmbientSounds(sounds);
 
 		if (doBiomeSounds()) {
-			final SoundEffect sound = BiomeRegistry.getSpotSound(playerBiome, conditions, EnvironState.RANDOM);
+			
+			LOTRBiomeVariant variant = null;
+			final WorldChunkManager chunkManager = player.worldObj.getWorldChunkManager();
+	    	if(chunkManager instanceof LOTRWorldChunkManager) {
+	    		variant = ((LOTRWorldChunkManager) chunkManager).getBiomeVariantAt(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posZ));
+	    	}
+	    	
+			final SoundEffect sound = BiomeRegistry.getSpotSound(playerBiome, variant, conditions, EnvironState.RANDOM);
 			if (sound != null)
 				SoundManager.playSoundAtPlayer(player, sound);
 		}
 
-		final SoundEffect sound = BiomeRegistry.getSpotSound(BiomeRegistry.PLAYER, conditions, EnvironState.RANDOM);
+		final SoundEffect sound = BiomeRegistry.getSpotSound(BiomeRegistry.PLAYER, null, conditions, EnvironState.RANDOM);
 		if (sound != null)
 			SoundManager.playSoundAtPlayer(player, sound);
 

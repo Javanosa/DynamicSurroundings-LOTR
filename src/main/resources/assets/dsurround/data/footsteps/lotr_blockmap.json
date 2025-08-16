@@ -1,0 +1,33 @@
+{
+	"lotr:tile.fallenLeaves+foliage":"brush",
+	"lotr:tile.fallenLeavesLOTR+foliage":"brush",
+	"lotr:tile.fallenLeavesLOTR2+foliage":"brush",
+	"lotr:tile.fallenLeavesLOTR3+foliage":"brush",
+	"lotr:tile.tallGrass":"NOT_EMITTER",
+	"lotr:tile.tallGrass+messy":"MESSY_GROUND",
+	"lotr:tile.tallGrass+foliage":"brush",
+	"lotr:tile.clover":"NOT_EMITTER",
+	"lotr:tile.clover+foliage":"brush",
+	"lotr:tile.deadMarshPlant+foliage":"straw",
+	"lotr:tile.aridGrass+foliage":"straw",
+	"lotr:tile.mordorMoss+foliage":"straw",
+	"lotr:tile.driedReeds":"#reed",
+	
+	"lotr:tile.thatch":"leaves",
+	"lotr:tile.thatchFloor+foliage":"leaves",
+	"lotr:tile.slabSingleThatch":"leaves",
+	"lotr:tile.slabDoubleThatch":"leaves",
+	"lotr:tile.stairsThatch":"leaves",
+	"lotr:tile.berryBush":"leaves",
+	
+	"lotr:tile.willowVines":"leaves",
+	"lotr:tile.mirkVines":"leaves",
+	"lotr:tile.willowVines+foliage":"leaves",
+	"lotr:tile.mirkVines+foliage":"leaves",
+	"lotr:tile.reeds":"#reed",
+	
+	"lotr:tile.glass":"glass",
+	"lotr:tile.stainedGlassPane":"glass",
+	"lotr:tile.stainedGlass":"glass",
+	"lotr:tile.glassPane":"glass"
+}
