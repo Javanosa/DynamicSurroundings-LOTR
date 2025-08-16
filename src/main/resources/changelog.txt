@@ -7,9 +7,3 @@
 - added lotr biome variant support
 - added lotr biome support
 - fixed freezes from config reloading if an unknown biome is found
-
-
-todo:
-- custom sound volumes and blocked sounds have no working defaults
-- savanna, taiga biome sound doesnt work
-- swamp plays when its raining
