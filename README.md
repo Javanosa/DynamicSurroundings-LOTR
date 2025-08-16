@@ -1,8 +1,15 @@
-### Build Status
-Master Branch: [![1.7.10 Branch](https://travis-ci.org/OreCruncher/BetterRain.svg?branch=1.7.10)](https://travis-ci.org/OreCruncher/BetterRain)
+### Dynamic Surroundings LOTR
+Minecraft mod that adds ambience, effects and better footstep sounds.
 
-### BetterRain
-Minecraft mod that improves the rain experience.
+**Changelog of 1.0.6.6-lotr**
+- There will be playing correct sounds for lotr biomes and variants
+- added footsteps for lotr blocks
+- added sounds for lotr biomes and variants
+- adjusted default config
+- adjusted sound volumes
+- added lotr biome variant support
+- added lotr biome support
+- fixed freezes from config reloading if an unknown biome is found
 
 ### License
 The MIT License (MIT)
