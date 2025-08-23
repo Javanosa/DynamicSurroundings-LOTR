@@ -18,6 +18,18 @@
 		{
 			"name":"Erebus",
 			"seaLevel":24
+		},
+		{
+			"name":"MiddleEarth",
+			"cloudHeight":192
+			
+		},
+		{
+			"name":"Utumno",
+			"seaLevel":0,
+			"haze":false,
+			"aurora":false,
+			"weather":false
 		}
 		
 	]

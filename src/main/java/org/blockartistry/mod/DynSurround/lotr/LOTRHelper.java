@@ -46,6 +46,7 @@ public class LOTRHelper {
 	public static final int getVariantGroup(final int variantid) {
 		if(variantid < VARIANT_ARR.length)
 			return VARIANT_ARR[variantid];
+		
 		return variantid;
 	}
 	
@@ -81,18 +82,29 @@ public class LOTRHelper {
 						}
 	
 					  // for some reason rivers can appearin the layer generator even while disabled in this biome
-					  variants.add(LOTRBiomeVariant.RIVER);
-					  if(biome.getEnableRiver()) {
-						  variants.add(LOTRBiomeVariant.LAKE);
+					  
+					  if(dim != LOTRDimension.UTUMNO) {
+							variants.add(LOTRBiomeVariant.RIVER);
+						  if(biome.getEnableRiver()) {
+							  variants.add(LOTRBiomeVariant.LAKE);
+						  }
 					  }
+					  
+					  // 4095 is max biomeid
+					  // 255 is max dimensionid
+					  // 2047 is max variantid
+					  
+					  
+					  int primaryKey = (dim.dimensionID << 12) | biome.biomeID;
 
 					  for(LOTRBiomeVariant variant : variants) {
-						  BiomeRegistry.registerEntry(1000 + biome.biomeID + (variant.variantID*10000), biome);
+						  BiomeRegistry.registerEntry((variant.variantID << 20) | primaryKey, biome);
+						  
 					  }
 					  
 					  // Standard biom variant
 					  
-					  BiomeRegistry.registerEntry(1000 + biome.biomeID, biome);
+					  BiomeRegistry.registerEntry(primaryKey, biome);
 					  
 					}
 				}

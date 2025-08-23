@@ -1,3 +1,8 @@
+1.0.6.7-lotr
+- fixed elevation haze in middleearth dimension
+- fixed biome fog when using 32 chunks, now also default disabled because it doesnt play to well with the lotr colors
+- change id registry to use binary key
+
 1.0.6.6-lotr
 - There will be playing correct sounds for lotr biomes and variants
 - added footsteps for lotr blocks

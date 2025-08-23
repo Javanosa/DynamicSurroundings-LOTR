@@ -119,8 +119,8 @@ public class BiomeFogRangeCalculator extends VanillaFogRangeCalculator {
 		final float weightDefault = weightMixed - weightBiomeFog;
 
 		final float fpDistanceBiomeFogAvg = (weightBiomeFog == 0) ? 0 : fpDistanceBiomeFog / weightBiomeFog;
-
-		float farPlaneDistance = (fpDistanceBiomeFog * 240 + event.farPlaneDistance * weightDefault) / weightMixed;
+		
+		float farPlaneDistance = (fpDistanceBiomeFog * Math.max(240, event.farPlaneDistance) + event.farPlaneDistance * weightDefault) / weightMixed;
 		final float farPlaneDistanceScaleBiome = (0.1f * (1 - fpDistanceBiomeFogAvg) + 0.75f * fpDistanceBiomeFogAvg);
 		final float farPlaneDistanceScale = (farPlaneDistanceScaleBiome * weightBiomeFog + 0.75f * weightDefault)
 				/ weightMixed;

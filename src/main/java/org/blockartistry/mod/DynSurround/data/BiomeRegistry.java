@@ -151,7 +151,9 @@ public final class BiomeRegistry {
 
 		public String toString(int key) {
 			final StringBuilder builder = new StringBuilder();
-			builder.append(String.format("Biome %d [%s]:", this.biome.biomeID, resolveName(this.biome, LOTRHelper.getVariantGroup((int) (key*0.0001)))));
+			int prevKey = key;
+			key = Math.max(0, key);
+			builder.append(String.format("Key %d, Dim %d, Biome %d, Variant %d [%s]:", prevKey, ((key >> 12) & 255), this.biome.biomeID, ((key >> 20) & 2047), resolveName(this.biome, LOTRHelper.getVariantGroup(key >> 20))));
 			if (this.hasPrecipitation)
 				builder.append(" PRECIPITATION");
 			if (this.hasDust)
@@ -200,8 +202,9 @@ public final class BiomeRegistry {
 			return "(Bad Biome)";
 		if (StringUtils.isEmpty(biome.biomeName))
 			return new StringBuilder().append('#').append(biome.biomeID).toString();
-		if (variantkey != 0)
+		if (variantkey > 0)
 			return new StringBuilder().append(biome.biomeName).append('.').append(LOTRBiomeVariant.getVariantForID(variantkey).variantName).toString();
+		
 		return biome.biomeName;
 	}
 	
@@ -227,9 +230,9 @@ public final class BiomeRegistry {
 					registry.put(biomeArray[i].biomeID, new Entry(biomeArray[i]));
 				}
 			
-			if(Module.lotr) {
+			if(Module.lotr)
 				LOTRHelper.registerLOTRBiomes();
-			}
+			
 			
 			// Add our fake biomes
 			registry.put(UNDERGROUND.biomeID, new Entry(UNDERGROUND));
@@ -262,20 +265,21 @@ public final class BiomeRegistry {
 			
 			int variantid = 0;
 			
-			boolean islotrbiome = biome instanceof LOTRBiome;
+			boolean islotrbiome = Module.lotr && biome instanceof LOTRBiome;
 			
 			if(islotrbiome && variant != null)
-				variantid = LOTRHelper.getVariantGroup(variant.variantID)*10000;
+				variantid = LOTRHelper.getVariantGroup(variant.variantID) << 20;
 			
 			// variant	isLOTRBiome	biomeID
 			// 51		1			168
-			final int key = biome == null ? WTF.biomeID : (islotrbiome ? 1000 : 0) + biome.biomeID + variantid;
+			final int key = biome == null ? WTF.biomeID : variantid | (islotrbiome ? (((LOTRBiome) biome).biomeDimension.dimensionID << 12) : 0) | biome.biomeID;
+			
 			Entry entry = registry.get(key);
 			if (entry == null) {
 				
 				entry = new Entry(biome);
 				registry.put(key, entry);
-				ModLog.warn("Biome [%s] was not detected during initial scan!", resolveName(biome, (int) (variantid*0.0001)));
+				ModLog.warn("Biome [%s] was not detected during initial scan!", resolveName(biome, variantid >> 20));
 				
 				/*ModLog.warn("Biome [%s] was not detected during initial scan! Reloading config...", resolveName(biome));
 				initialize();
@@ -398,7 +402,7 @@ public final class BiomeRegistry {
 			for (int key : registry.keys()) {
 				final Entry biomeEntry = registry.get(key);
 
-				if (isBiomeMatch(entry, resolveName(biomeEntry.biome, LOTRHelper.getVariantGroup((int) (key*0.0001))))) {
+				if (isBiomeMatch(entry, resolveName(biomeEntry.biome, LOTRHelper.getVariantGroup(Math.max(0, key) >> 20)))) {
 					if (entry.hasPrecipitation != null)
 						biomeEntry.hasPrecipitation = entry.hasPrecipitation.booleanValue();
 					if (entry.hasAurora != null)

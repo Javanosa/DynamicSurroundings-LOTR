@@ -110,9 +110,9 @@ public final class ModOptions {
 	@Parameter(category = CATEGORY_FOG, property = CONFIG_ENABLE_ELEVATION_HAZE, defaultValue = "true")
 	@Comment("Higher the player elevation the more haze that is experienced")
 	public static boolean enableElevationHaze = true;
-	@Parameter(category = CATEGORY_FOG, property = CONFIG_ENABLE_BIOME_FOG, defaultValue = "true")
+	@Parameter(category = CATEGORY_FOG, property = CONFIG_ENABLE_BIOME_FOG, defaultValue = "false")
 	@Comment("Enable biome specific fog density and color")
-	public static boolean enableBiomeFog = true;
+	public static boolean enableBiomeFog = false;
 	@Parameter(category = CATEGORY_FOG, property = CONFIG_ENABLE_MORNING_FOG, defaultValue = "true")
 	@Comment("Enable morning fog")
 	public static boolean enableMorningFog = true;
